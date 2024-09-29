@@ -1,5 +1,5 @@
-from django.urls import reverse_lazy
-from django.views.generic import CreateView, ListView, DetailView
+from django.urls import reverse_lazy, reverse
+from django.views.generic import CreateView, ListView, DetailView, UpdateView
 
 from mailings.forms import MessageForm
 from mailings.models import Message
@@ -10,6 +10,11 @@ class MessageCreate(CreateView):
     model = Message
     form_class = MessageForm
     success_url = reverse_lazy('mailings:message_create')
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        context_data['title'] = 'Создание сообщения'
+        return context_data
 
 
 class MessageList(ListView):
@@ -28,3 +33,16 @@ class MessageDetail(DetailView):
         context_data = super().get_context_data(**kwargs)
         context_data['title'] = 'Подробности сообщения'
         return context_data
+
+
+class MessageUpdate(UpdateView):
+    model = Message
+    form_class = MessageForm
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        context_data['title'] = 'Редактирование сообщения'
+        return context_data
+
+    def get_success_url(self):
+        return reverse('mailings:message_detail', args=[self.kwargs.get('pk')])
