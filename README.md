@@ -4,12 +4,15 @@
 
 Для создания суперпользователя: python manage.py create_admin
 
+Для запуска сайта: python manage.py runserver
+
 
 DevBlog
 
 v.1
-1. Добавлено приложение mailings
-2. Добавлены модели Message, Client, Mailing, MailingTry
+1. Приложение mailings
+2. Модели Message, Client, Mailing, MailingTry
+3. Приложение main
 
 v.0
 1. Установлены базовые библиотеки для работы сайта
