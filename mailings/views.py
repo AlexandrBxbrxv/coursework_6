@@ -1,11 +1,11 @@
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, ListView
+from django.views.generic import CreateView, ListView, DetailView
 
 from mailings.forms import MessageForm
 from mailings.models import Message
 
 
-# CRUD для MESSAGE
+# CRUD для MESSAGE ##################################################
 class MessageCreate(CreateView):
     model = Message
     form_class = MessageForm
@@ -18,4 +18,13 @@ class MessageList(ListView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context_data = super().get_context_data(**kwargs)
         context_data['title'] = 'Сообщения'
+        return context_data
+
+
+class MessageDetail(DetailView):
+    model = Message
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        context_data['title'] = 'Подробности сообщения'
         return context_data
