@@ -12,9 +12,15 @@
       </div>
       <div class="card-footer">
         <div class="row col-4">
-          <div class="col-6 p-1">
-            <button class="btn btn-outline-success col-12">Создать</button>
-          </div>
+          {% if object %}
+            <div class="col-6 p-1">
+              <button class="btn btn-outline-success col-12">Сохранить</button>
+            </div>
+          {% else %}
+            <div class="col-6 p-1">
+              <button class="btn btn-outline-success col-12">Создать</button>
+            </div>
+          {% endif %}
           <div class="col-6 p-1">
             <a class="btn btn-outline-secondary col-12" href="{% url 'mailings:message_list' %}">Назад</a>
           </div>

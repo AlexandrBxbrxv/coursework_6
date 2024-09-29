@@ -21,7 +21,7 @@
         </div>
         <div class="row">
           <div class="col-6 p-1">
-            <a class="btn btn-outline-warning col-12" href="#">Изменить</a>
+            <a class="btn btn-outline-warning col-12" href="{% url 'mailings:message_update' object.pk %}">Изменить</a>
           </div>
           <div class="col-6 p-1">
             <a class="btn btn-outline-danger col-12" href="#">Удалить</a>
