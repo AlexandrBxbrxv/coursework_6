@@ -1,0 +1,27 @@
+{% extends 'main/base.html' %}
+{% block content %}
+<div class="col-12">
+  <div class="card mt-5">
+    <div class="card-header">
+      {{ object.topic }}
+    </div>
+    <div class="card-body">
+      {{ object.body }}
+    </div>
+    <div class="card-footer">
+      <div class="row col-4">
+        <div class="col-6 p-1">
+          <form method="post">
+            {% csrf_token %}
+            <button class="btn btn-outline-danger col-12">Удалить</button>
+          </form>
+        </div>
+        <div class="col-6 p-1">
+          <a class="btn btn-outline-secondary col-12" href="{% url 'mailings:message_list' %}">Назад</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
