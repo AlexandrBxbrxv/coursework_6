@@ -9,6 +9,10 @@
 
 DevBlog
 
+v1.1
+1. Базовые html страница, навигация, вывод главной
+2. CRUD для Message
+
 v.1
 1. Приложение mailings
 2. Модели Message, Client, Mailing, MailingTry
