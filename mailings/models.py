@@ -15,21 +15,36 @@ class Message(models.Model):
         verbose_name_plural = 'сообщения'
 
 
-# Выборы для настройки РАССЫЛКИ
-INTERVALS = [
-    ('minute', 'Раз в минуту'),
-    ('day', 'Раз в день'),
-    ('week', 'Раз в неделю'),
-    ('month', 'Раз в месяц')
-]
-STATUSES = [
-    ('off', 'Отключена'),
-    ('waiting_first', 'Запущена, Ожидает первой отправки'),
-    ('send_waiting', 'Отправлена, ожидает следующей отправки')
-]
+class MailingTry(models.Model):
+    try_count = models.PositiveIntegerField(default=0, verbose_name='попыток рассылки')
+    last_try = models.DateField(help_text='дата и время последней попытки', verbose_name='последняя попытка')
+    try_status = models.BooleanField(default=False, verbose_name='статус попытки')
+    email_response = models.TextField(**NULLABLE, verbose_name='ответ почтового сервера')
+    try_number = models.CharField(max_length=100, verbose_name='номер попытки')
+
+    def __str__(self):
+        return self.try_number
+
+    class Meta:
+        verbose_name = 'попытка рассылки'
+        verbose_name_plural = 'попытки рассылки'
+        ordering = ('try_number',)
 
 
 class Mailing(models.Model):
+
+    INTERVALS = [
+        ('minute', 'Раз в минуту'),
+        ('day', 'Раз в день'),
+        ('week', 'Раз в неделю'),
+        ('month', 'Раз в месяц')
+    ]
+    STATUSES = [
+        ('off', 'Отключена'),
+        ('waiting_first', 'Запущена, Ожидает первой отправки'),
+        ('send_waiting', 'Отправлена, ожидает следующей отправки')
+    ]
+
     name = models.CharField(max_length=100, verbose_name='название')
     first_sending = models.DateField(help_text='дата и время первой отправки рассылки', verbose_name='первая отправка')
     interval = models.CharField(max_length=15, choices=INTERVALS, default='month', verbose_name='периодичность')
@@ -37,6 +52,8 @@ class Mailing(models.Model):
 
     message = models.ForeignKey(Message, **NULLABLE, on_delete=models.SET_NULL, related_name='mailing_message',
                                 verbose_name='сообщение рассылки')
+    mailing_try = models.ForeignKey(MailingTry, **NULLABLE, on_delete=models.SET_NULL,
+                                    related_name='mailing_tries', verbose_name='попытки рассылки')
 
     def __str__(self):
         return self.name
@@ -59,4 +76,3 @@ class Client(models.Model):
     class Meta:
         verbose_name = 'клиент'
         verbose_name_plural = 'клиенты'
-
