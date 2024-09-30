@@ -12,6 +12,7 @@ class MessageAdmin(admin.ModelAdmin):
 @admin.register(Mailing)
 class MailingAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'first_sending', 'interval', 'status', 'message',)
+    filter_horizontal = ('clients',)
     list_filter = ('message',)
     search_fields = ('name',)
 
@@ -24,6 +25,6 @@ class ClientAdmin(admin.ModelAdmin):
 
 @admin.register(MailingTry)
 class MailingTryAdmin(admin.ModelAdmin):
-    list_display = ('id', 'try_number', 'last_try', 'try_status', 'try_count',)
-    list_filter = ('try_status',)
+    list_display = ('id', 'try_number', 'last_try', 'try_status', 'try_count', 'mailing',)
+    list_filter = ('try_status', 'mailing',)
     search_fields = ('try_number',)
