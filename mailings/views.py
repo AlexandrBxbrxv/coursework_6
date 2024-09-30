@@ -1,8 +1,9 @@
+from django.forms import inlineformset_factory
 from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView, ListView, DetailView, UpdateView, DeleteView
 
-from mailings.forms import MessageForm, ClientForm
-from mailings.models import Message, Client
+from mailings.forms import MessageForm, ClientForm, MailingForm
+from mailings.models import Message, Client, Mailing
 
 
 # CRUD для Message ##################################################
@@ -108,4 +109,16 @@ class ClientDelete(DeleteView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context_data = super().get_context_data(**kwargs)
         context_data['title'] = 'Удаление клиента'
+        return context_data
+
+
+# CRUD для Mailing ##################################################
+class MailingCreate(CreateView):
+    model = Mailing
+    form_class = MailingForm
+    success_url = reverse_lazy('mailings:mailing_create')
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        context_data['title'] = 'Создание рассылки'
         return context_data
