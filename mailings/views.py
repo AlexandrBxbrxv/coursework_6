@@ -86,3 +86,16 @@ class ClientDetail(DetailView):
         context_data = super().get_context_data(**kwargs)
         context_data['title'] = 'Подробности клиента'
         return context_data
+
+
+class ClientUpdate(UpdateView):
+    model = Client
+    form_class = ClientForm
+
+    def get_success_url(self):
+        return reverse('mailings:client_detail', args=[self.kwargs.get('pk')])
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        context_data['title'] = 'Редактирование клиента'
+        return context_data
