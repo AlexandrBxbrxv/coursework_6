@@ -9,7 +9,7 @@ from mailings.models import Message, Client
 class MessageCreate(CreateView):
     model = Message
     form_class = MessageForm
-    success_url = reverse_lazy('mailings:message_create')
+    success_url = reverse_lazy('mailings:message_list')
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context_data = super().get_context_data(**kwargs)
@@ -62,7 +62,7 @@ class MessageDelete(DeleteView):
 class ClientCreate(CreateView):
     model = Client
     form_class = ClientForm
-    success_url = reverse_lazy('mailings:client_create')
+    success_url = reverse_lazy('mailings:client_list')
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context_data = super().get_context_data(**kwargs)
