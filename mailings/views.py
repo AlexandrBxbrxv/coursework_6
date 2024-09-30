@@ -99,3 +99,13 @@ class ClientUpdate(UpdateView):
         context_data = super().get_context_data(**kwargs)
         context_data['title'] = 'Редактирование клиента'
         return context_data
+
+
+class ClientDelete(DeleteView):
+    model = Client
+    success_url = reverse_lazy('mailings:client_list')
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        context_data['title'] = 'Удаление клиента'
+        return context_data
