@@ -1,0 +1,36 @@
+{% extends 'main/base.html' %}
+{% block content %}
+<div class="container p-0">
+  <a class="btn btn-outline-success" href="{% url 'mailings:client_create' %}">Добавить рассылку</a>
+</div>
+<div class="container mt-3 p-0">
+  <table class="table table-striped-columns">
+    <thead>
+    <tr>
+      <th scope="col">id</th>
+      <th scope="col">Наименование</th>
+      <th scope="col">Статус</th>
+      <th scope="col">Периодичность</th>
+      <th scope="col">Сообщение</th>
+      <th scope="col">Кнопки</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for object in object_list %}
+    <tr>
+      <td>{{ object.pk }}</td>
+      <td>{{ object.name }}</td>
+      <td>{{ object.status }}</td>
+      <td>{{ object.interval }}</td>
+      <td><a href="{% url 'mailings:message_detail' object.message.pk %}">{{ object.message }}</a></td>
+      <td>
+        <div class="col-12 p-1">
+          <a class="btn btn-outline-dark col-12" href="{% url 'mailings:client_detail' object.pk %}">Подробнее</a>
+        </div>
+      </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
