@@ -1,11 +1,11 @@
 from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView, ListView, DetailView, UpdateView, DeleteView
 
-from mailings.forms import MessageForm
-from mailings.models import Message
+from mailings.forms import MessageForm, ClientForm
+from mailings.models import Message, Client
 
 
-# CRUD для MESSAGE ##################################################
+# CRUD для Message ##################################################
 class MessageCreate(CreateView):
     model = Message
     form_class = MessageForm
@@ -55,4 +55,16 @@ class MessageDelete(DeleteView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context_data = super().get_context_data(**kwargs)
         context_data['title'] = 'Удаление сообщения'
+        return context_data
+
+
+# CRUD для Client ###################################################
+class ClientCreate(CreateView):
+    model = Client
+    form_class = ClientForm
+    success_url = reverse_lazy('mailings:client_create')
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        context_data['title'] = 'Создание клиента'
         return context_data
