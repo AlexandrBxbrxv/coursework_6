@@ -131,3 +131,12 @@ class MailingList(ListView):
         context_data = super().get_context_data(**kwargs)
         context_data['title'] = 'Рассылки'
         return context_data
+
+
+class MailingDetail(DetailView):
+    model = Mailing
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        context_data['title'] = 'Подробности рассылки'
+        return context_data
