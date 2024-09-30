@@ -22,10 +22,10 @@
       <td>{{ object.name }}</td>
       <td>{{ object.status }}</td>
       <td>{{ object.interval }}</td>
-      <td><a href="{% url 'mailings:message_detail' object.message.pk %}">{{ object.message }}</a></td>
+      <td>{{ object.message }}</td>
       <td>
         <div class="col-12 p-1">
-          <a class="btn btn-outline-dark col-12" href="{% url 'mailings:client_detail' object.pk %}">Подробнее</a>
+          <a class="btn btn-outline-dark col-12" href="{% url 'mailings:mailing_detail' object.pk %}">Подробнее</a>
         </div>
       </td>
     </tr>
