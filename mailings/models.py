@@ -31,6 +31,19 @@ class MailingTry(models.Model):
         ordering = ('try_number',)
 
 
+class Client(models.Model):
+    email = models.EmailField(unique=True, verbose_name='email')
+    full_name = models.CharField(max_length=200, verbose_name='фио')
+    comment = models.TextField(**NULLABLE)
+
+    def __str__(self):
+        return self.full_name
+
+    class Meta:
+        verbose_name = 'клиент'
+        verbose_name_plural = 'клиенты'
+
+
 class Mailing(models.Model):
 
     INTERVALS = [
@@ -52,6 +65,9 @@ class Mailing(models.Model):
 
     message = models.ForeignKey(Message, **NULLABLE, on_delete=models.SET_NULL, related_name='mailing_message',
                                 verbose_name='сообщение рассылки')
+
+    clients = models.ManyToManyField(Client, related_name='mailing_clients', verbose_name='клиенты рассылки')
+
     mailing_try = models.ForeignKey(MailingTry, **NULLABLE, on_delete=models.SET_NULL,
                                     related_name='mailing_tries', verbose_name='попытки рассылки')
 
@@ -61,18 +77,3 @@ class Mailing(models.Model):
     class Meta:
         verbose_name = 'рассылка'
         verbose_name_plural = 'рассылки'
-
-
-class Client(models.Model):
-    email = models.EmailField(unique=True, verbose_name='email')
-    full_name = models.CharField(max_length=200, verbose_name='фио')
-    comment = models.TextField(**NULLABLE)
-
-    mailing = models.ManyToManyField(Mailing, related_name='client_mailings', verbose_name='рассылки клиента')
-
-    def __str__(self):
-        return self.full_name
-
-    class Meta:
-        verbose_name = 'клиент'
-        verbose_name_plural = 'клиенты'
