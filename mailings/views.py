@@ -165,11 +165,20 @@ class MailingDelete(DeleteView):
         return context_data
 
 
-# MailingTry ########################################################
+# Read для MailingTry ###############################################
 class MailingTryList(ListView):
     model = MailingTry
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context_data = super().get_context_data(**kwargs)
-        context_data['title'] = 'Статистика рассылок'
+        context_data['title'] = 'Попытки рассылок'
+        return context_data
+
+
+class MailingTryDetail(DetailView):
+    model = MailingTry
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        context_data['title'] = 'Подробности попытки'
         return context_data
