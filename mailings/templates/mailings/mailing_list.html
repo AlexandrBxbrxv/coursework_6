@@ -1,7 +1,7 @@
 {% extends 'main/base.html' %}
 {% block content %}
 <div class="container p-0">
-  <a class="btn btn-outline-success" href="{% url 'mailings:client_create' %}">Добавить рассылку</a>
+  <a class="btn btn-outline-success" href="{% url 'mailings:mailing_create' %}">Добавить рассылку</a>
 </div>
 <div class="container mt-3 p-0">
   <table class="table table-striped-columns">
@@ -22,7 +22,13 @@
       <td>{{ object.name }}</td>
       <td>{{ object.status }}</td>
       <td>{{ object.interval }}</td>
-      <td>{{ object.message }}</td>
+      <td>
+        {% if object.message %}
+            {{ object.message|truncatechars:15 }}
+            {% else %}
+            <h6>Отсутствует</h6>
+            {% endif %}
+      </td>
       <td>
         <div class="col-12 p-1">
           <a class="btn btn-outline-dark col-12" href="{% url 'mailings:mailing_detail' object.pk %}">Подробнее</a>

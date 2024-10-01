@@ -14,7 +14,7 @@
             </button>
             <ul class="dropdown-menu dropdown-menu-dark">
               <li><a class="dropdown-item" href="#">Статистика</a></li>
-              <li><a class="dropdown-item" href="#">Рассылки</a></li>
+              <li><a class="dropdown-item" href="{% url 'mailings:mailing_list' %}">Рассылки</a></li>
               <li><a class="dropdown-item" href="{% url 'mailings:message_list' %}">Сообщения</a></li>
               <li><a class="dropdown-item" href="{% url 'mailings:client_list' %}">Клиенты</a></li>
             </ul>
