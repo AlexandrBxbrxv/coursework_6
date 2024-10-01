@@ -15,20 +15,17 @@ class Message(models.Model):
         verbose_name_plural = 'сообщения'
 
 
-class MailingTry(models.Model):
-    try_count = models.PositiveIntegerField(default=0, verbose_name='попыток рассылки')
-    last_try = models.DateField(help_text='дата и время последней попытки', verbose_name='последняя попытка')
-    try_status = models.BooleanField(default=False, verbose_name='статус попытки')
-    email_response = models.TextField(**NULLABLE, verbose_name='ответ почтового сервера')
-    try_number = models.CharField(max_length=100, verbose_name='номер попытки')
+class Client(models.Model):
+    email = models.EmailField(unique=True, verbose_name='email')
+    full_name = models.CharField(max_length=200, verbose_name='фио')
+    comment = models.TextField(**NULLABLE)
 
     def __str__(self):
-        return self.try_number
+        return self.full_name
 
     class Meta:
-        verbose_name = 'попытка рассылки'
-        verbose_name_plural = 'попытки рассылки'
-        ordering = ('try_number',)
+        verbose_name = 'клиент'
+        verbose_name_plural = 'клиенты'
 
 
 class Mailing(models.Model):
@@ -52,8 +49,8 @@ class Mailing(models.Model):
 
     message = models.ForeignKey(Message, **NULLABLE, on_delete=models.SET_NULL, related_name='mailing_message',
                                 verbose_name='сообщение рассылки')
-    mailing_try = models.ForeignKey(MailingTry, **NULLABLE, on_delete=models.SET_NULL,
-                                    related_name='mailing_tries', verbose_name='попытки рассылки')
+
+    clients = models.ManyToManyField(Client, related_name='mailing_clients', verbose_name='клиенты рассылки')
 
     def __str__(self):
         return self.name
@@ -61,18 +58,23 @@ class Mailing(models.Model):
     class Meta:
         verbose_name = 'рассылка'
         verbose_name_plural = 'рассылки'
+        ordering = ('first_sending',)
 
 
-class Client(models.Model):
-    email = models.EmailField(unique=True, verbose_name='email')
-    full_name = models.CharField(max_length=200, verbose_name='фио')
-    comment = models.TextField(**NULLABLE)
+class MailingTry(models.Model):
+    try_count = models.PositiveIntegerField(default=0, verbose_name='попыток рассылки')
+    last_try = models.DateField(help_text='дата и время последней попытки', verbose_name='последняя попытка')
+    try_status = models.BooleanField(default=False, verbose_name='статус попытки')
+    email_response = models.TextField(**NULLABLE, verbose_name='ответ почтового сервера')
+    try_number = models.CharField(max_length=100, verbose_name='номер попытки')
 
-    mailing = models.ManyToManyField(Mailing, related_name='client_mailings', verbose_name='рассылки клиента')
+    mailing = models.ForeignKey(Mailing, **NULLABLE, on_delete=models.SET_NULL,
+                                related_name='tries_mailing', verbose_name='рассылка попытки')
 
     def __str__(self):
-        return self.full_name
+        return self.try_number
 
     class Meta:
-        verbose_name = 'клиент'
-        verbose_name_plural = 'клиенты'
+        verbose_name = 'попытка рассылки'
+        verbose_name_plural = 'попытки рассылки'
+        ordering = ('try_number', 'last_try',)

@@ -1,0 +1,33 @@
+{% extends 'main/base.html' %}
+{% block content %}
+<div class="col-12">
+  <div class="card mt-4">
+    <div class="card-header">
+      <h4>{{ object.full_name }}</h4>
+    </div>
+    <div class="card-body">
+      Email: {{ object.email }}
+      {% if object.comment %}
+      <hr>
+      <div class="card-text">
+        <h6>Комментарий</h6>
+        {{ object.comment }}
+      </div>
+      {% endif %}
+    </div>
+    <div class="card-footer">
+      <div class="row col-4">
+        <div class="col-4 p-1">
+          <a class="btn btn-outline-secondary col-12" href="{% url 'mailings:client_list' %}">Назад</a>
+        </div>
+        <div class="col-4 p-1">
+          <a class="btn btn-outline-warning col-12" href="{% url 'mailings:client_update' object.pk %}">Изменить</a>
+        </div>
+        <div class="col-4 p-1">
+          <a class="btn btn-outline-danger col-12" href="{% url 'mailings:client_delete' object.pk %}">Удалить</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
