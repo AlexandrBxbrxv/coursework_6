@@ -140,3 +140,26 @@ class MailingDetail(DetailView):
         context_data = super().get_context_data(**kwargs)
         context_data['title'] = 'Подробности рассылки'
         return context_data
+
+
+class MailingUpdate(UpdateView):
+    model = Mailing
+    form_class = MailingForm
+
+    def get_success_url(self):
+        return reverse('mailings:mailing_detail', args=[self.kwargs.get('pk')])
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        context_data['title'] = 'Редактирование рассылки'
+        return context_data
+
+
+class MailingDelete(DeleteView):
+    model = Mailing
+    success_url = reverse_lazy('mailings:mailing_list')
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        context_data['title'] = 'Удаление рассылки'
+        return context_data
