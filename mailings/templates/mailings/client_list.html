@@ -1,8 +1,10 @@
 {% extends 'main/base.html' %}
 {% block content %}
+{% if user.is_authenticated %}
 <div class="container p-0">
   <a class="btn btn-outline-success" href="{% url 'mailings:client_create' %}">Добавить клиента</a>
 </div>
+{% endif %}
 <div class="container mt-3 p-0">
   <table class="table table-striped-columns">
     <thead>
