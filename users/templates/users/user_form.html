@@ -2,9 +2,9 @@
 {% block content %}
 <div class="container col-6">
   <div class="card mt-5">
-    {% if object %}
+    {% if object.first_name or object.last_name %}
     <div class="card-header">
-      {{ object.first_name }} {{ object.last_name }}
+      <h4>{{ object.first_name }} {{ object.last_name }}</h4>
     </div>
     {% endif %}
     <form method="post">
