@@ -4,12 +4,18 @@ from django.views.generic import CreateView
 
 from users.forms import UserCreateForm
 from users.models import User
+from users.services import send_email_verification_message
 
 
 class UserRegister(CreateView):
     model = User
     form_class = UserCreateForm
     success_url = reverse_lazy('main:index')
+
+    def form_valid(self, form):
+        user = form.save()
+        send_email_verification_message(self, user)
+        return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
