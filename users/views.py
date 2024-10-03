@@ -1,10 +1,21 @@
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views.generic import CreateView
+from django.contrib.auth.views import LoginView
 
-from users.forms import UserCreateForm
+from users.forms import UserCreateForm, UserLoginForm
 from users.models import User
 from users.services import send_email_verification_message
+
+
+class UserLogin(LoginView):
+    template_name = 'users/login.html'
+    form_class = UserLoginForm
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        context_data['title'] = 'Авторизация'
+        return context_data
 
 
 class UserRegister(CreateView):
