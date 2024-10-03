@@ -1,7 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, UpdateView
+from django.views.generic import CreateView, UpdateView, ListView
 from django.contrib.auth.views import LoginView
 
 from users.forms import UserCreateForm, UserLoginForm, UserProfileForm
@@ -19,6 +19,7 @@ class UserLogin(LoginView):
         return context_data
 
 
+# Create, Read, Update для User #####################################
 class UserRegister(CreateView):
     model = User
     form_class = UserCreateForm
@@ -42,7 +43,16 @@ def email_verification(request, token):
     return redirect('users:login')
 
 
-class UserProfile(LoginRequiredMixin, UpdateView):
+class UserList(ListView):
+    model = User
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Пользователи'
+        return context
+
+
+class UserProfileUpdate(LoginRequiredMixin, UpdateView):
     model = User
     form_class = UserProfileForm
     success_url = reverse_lazy('main:index')
@@ -52,5 +62,5 @@ class UserProfile(LoginRequiredMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Профиль'
+        context['title'] = 'Редактирование профиля'
         return context
