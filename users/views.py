@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView
@@ -41,7 +42,7 @@ def email_verification(request, token):
     return redirect('users:login')
 
 
-class UserProfile(UpdateView):
+class UserProfile(LoginRequiredMixin, UpdateView):
     model = User
     form_class = UserProfileForm
     success_url = reverse_lazy('main:index')
