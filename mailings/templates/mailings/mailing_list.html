@@ -1,8 +1,10 @@
 {% extends 'main/base.html' %}
 {% block content %}
+{% if user.is_authenticated %}
 <div class="container p-0">
   <a class="btn btn-outline-success" href="{% url 'mailings:mailing_create' %}">Добавить рассылку</a>
 </div>
+{% endif %}
 <div class="container mt-3 p-0">
   <table class="table table-striped-columns">
     <thead>
@@ -24,10 +26,10 @@
       <td>{{ object.interval }}</td>
       <td>
         {% if object.message %}
-            {{ object.message|truncatechars:15 }}
-            {% else %}
-            <h6>Отсутствует</h6>
-            {% endif %}
+        {{ object.message|truncatechars:15 }}
+        {% else %}
+        <h6>Отсутствует</h6>
+        {% endif %}
       </td>
       <td>
         <div class="col-12 p-1">
