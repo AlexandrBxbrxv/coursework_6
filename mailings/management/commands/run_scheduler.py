@@ -10,6 +10,7 @@ from django_apscheduler.jobstores import DjangoJobStore
 from django_apscheduler.models import DjangoJobExecution
 from django_apscheduler import util
 
+
 logger = logging.getLogger(__name__)
 
 
@@ -40,6 +41,7 @@ class Command(BaseCommand):
         scheduler = BlockingScheduler(timezone=settings.TIME_ZONE)
         scheduler.add_jobstore(DjangoJobStore(), "default")
 
+        # every 10 seconds
         scheduler.add_job(
             my_job,
             trigger=CronTrigger(second="*/10"),  # Every 10 seconds
