@@ -1,9 +1,9 @@
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
-from django.views.generic import CreateView
+from django.views.generic import CreateView, UpdateView
 from django.contrib.auth.views import LoginView
 
-from users.forms import UserCreateForm, UserLoginForm
+from users.forms import UserCreateForm, UserLoginForm, UserProfileForm
 from users.models import User
 from users.services import send_email_verification_message
 
@@ -39,3 +39,9 @@ def email_verification(request, token):
     user.is_active = True
     user.save()
     return redirect('users:login')
+
+
+class UserProfile(UpdateView):
+    model = User
+    form_class = UserProfileForm
+    success_url = reverse_lazy('main:index')
