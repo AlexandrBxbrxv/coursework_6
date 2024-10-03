@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views.generic import CreateView
 
@@ -14,3 +15,10 @@ class UserRegister(CreateView):
         context_data = super().get_context_data(**kwargs)
         context_data['title'] = 'Регистрация'
         return context_data
+
+
+def email_verification(request, token):
+    user = get_object_or_404(User, token=token)
+    user.is_active = True
+    user.save()
+    return redirect('users:login')
