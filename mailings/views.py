@@ -12,6 +12,13 @@ class MessageCreate(LoginRequiredMixin, CreateView):
     form_class = MessageForm
     success_url = reverse_lazy('mailings:message_list')
 
+    def form_valid(self, form):
+        message = form.save()
+        user = self.request.user
+        message.owner = user
+        message.save()
+        return super().form_valid(form)
+
     def get_context_data(self, *, object_list=None, **kwargs):
         context_data = super().get_context_data(**kwargs)
         context_data['title'] = 'Создание сообщения'
@@ -65,6 +72,13 @@ class ClientCreate(LoginRequiredMixin, CreateView):
     form_class = ClientForm
     success_url = reverse_lazy('mailings:client_list')
 
+    def form_valid(self, form):
+        client = form.save()
+        user = self.request.user
+        client.owner = user
+        client.save()
+        return super().form_valid(form)
+
     def get_context_data(self, *, object_list=None, **kwargs):
         context_data = super().get_context_data(**kwargs)
         context_data['title'] = 'Создание клиента'
@@ -117,6 +131,13 @@ class MailingCreate(LoginRequiredMixin, CreateView):
     model = Mailing
     form_class = MailingForm
     success_url = reverse_lazy('mailings:mailing_create')
+
+    def form_valid(self, form):
+        mailing = form.save()
+        user = self.request.user
+        mailing.owner = user
+        mailing.save()
+        return super().form_valid(form)
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context_data = super().get_context_data(**kwargs)
