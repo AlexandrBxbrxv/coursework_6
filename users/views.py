@@ -53,7 +53,7 @@ class UserList(ListView):
         return context
 
 
-class UserProfile(DetailView):
+class UserDetail(DetailView):
     model = User
 
     def get_context_data(self, **kwargs):
@@ -64,16 +64,8 @@ class UserProfile(DetailView):
 
 class UserProfileUpdate(LoginRequiredMixin, UpdateView):
     model = User
+    form_class = UserProfileForm
     success_url = reverse_lazy('main:index')
-
-    def get_form_class(self):
-        user = self.request.user
-        if user == self.object.pk:
-            return UserProfileForm
-        if user.has_perm('users.change_is_active'):
-            return UserProfileManagerForm
-        else:
-            raise PermissionDenied
 
     def get_object(self, queryset=None):
         return self.request.user
@@ -81,4 +73,21 @@ class UserProfileUpdate(LoginRequiredMixin, UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Редактирование профиля'
+        return context
+
+
+class UserUpdate(LoginRequiredMixin, UpdateView):
+    model = User
+    success_url = reverse_lazy('main:index')
+
+    def get_form_class(self):
+        user = self.request.user
+        if user.has_perm('users.change_is_active'):
+            return UserProfileManagerForm
+        else:
+            raise PermissionDenied
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Редактирование пользователя'
         return context

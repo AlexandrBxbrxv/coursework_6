@@ -13,7 +13,7 @@
     <div class="card-footer">
       <div class="row col-12">
         <div class="col-6 p-1">
-          <a class="btn btn-outline-success col-12" href="{% url 'users:profile_update' %}">Редактировать профиль</a>
+          <a class="btn btn-outline-success col-12" href="{% url 'users:user_update' object.pk %}">Редактировать профиль</a>
         </div>
         <div class="col-6 p-1">
           <a class="btn btn-outline-secondary col-12" href="{% url 'main:index' %}">На главную</a>
