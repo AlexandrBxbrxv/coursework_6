@@ -1,0 +1,29 @@
+{% extends 'main/base.html' %}
+{% block content %}
+<div class="container mt-3 p-0">
+  <table class="table table-striped-columns">
+    <thead>
+    <tr>
+      <th scope="col">id</th>
+      <th scope="col">email</th>
+      <th scope="col">Активен</th>
+      <th scope="col">Кнопки</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for object in object_list %}
+    <tr>
+      <td>{{ object.pk }}</td>
+      <td>{{ object.email }}</td>
+      <td>{{ object.is_active }}</td>
+      <td>
+        <div class="col-12 p-1">
+          <a class="btn btn-outline-dark col-12" href="{% url 'users:profile_update' %}">Подробнее</a>
+        </div>
+      </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
