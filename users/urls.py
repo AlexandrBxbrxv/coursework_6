@@ -13,6 +13,6 @@ urlpatterns = [
     path('register/', UserRegister.as_view(), name='register'),
     path('email-confirm/<str:token>/', email_verification, name='email_confirm'),
     path('user/list/', UserList.as_view(), name='user_list'),
-    path('user/profile/', UserProfile.as_view(), name='profile'),
+    path('user/profile/<int:pk>', UserProfile.as_view(), name='profile'),
     path('change-profile/', UserProfileUpdate.as_view(), name='profile_update'),
 ]
