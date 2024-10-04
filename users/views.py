@@ -1,10 +1,11 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView, ListView, DetailView
 from django.contrib.auth.views import LoginView
 
-from users.forms import UserCreateForm, UserLoginForm, UserProfileForm
+from users.forms import UserCreateForm, UserLoginForm, UserProfileForm, UserProfileManagerForm
 from users.models import User
 from users.services import send_email_verification_message
 
@@ -63,8 +64,16 @@ class UserProfile(DetailView):
 
 class UserProfileUpdate(LoginRequiredMixin, UpdateView):
     model = User
-    form_class = UserProfileForm
     success_url = reverse_lazy('main:index')
+
+    def get_form_class(self):
+        user = self.request.user
+        if user == self.object.pk:
+            return UserProfileForm
+        if user.has_perm('users.change_is_active'):
+            return UserProfileManagerForm
+        else:
+            raise PermissionDenied
 
     def get_object(self, queryset=None):
         return self.request.user
