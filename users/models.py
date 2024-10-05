@@ -17,5 +17,9 @@ class User(AbstractUser):
         return self.email
 
     class Meta:
+        permissions = [
+            ('change_is_active', 'Can change is_active of user'),
+        ]
+
         verbose_name = 'пользователь'
         verbose_name_plural = 'пользователи'

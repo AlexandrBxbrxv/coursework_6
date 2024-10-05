@@ -1,10 +1,11 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, UpdateView
+from django.views.generic import CreateView, UpdateView, ListView, DetailView
 from django.contrib.auth.views import LoginView
 
-from users.forms import UserCreateForm, UserLoginForm, UserProfileForm
+from users.forms import UserCreateForm, UserLoginForm, UserProfileForm, UserProfileManagerForm
 from users.models import User
 from users.services import send_email_verification_message
 
@@ -19,6 +20,7 @@ class UserLogin(LoginView):
         return context_data
 
 
+# Create, Read, Update для User #####################################
 class UserRegister(CreateView):
     model = User
     form_class = UserCreateForm
@@ -42,9 +44,30 @@ def email_verification(request, token):
     return redirect('users:login')
 
 
-class UserProfile(LoginRequiredMixin, UpdateView):
+class UserList(LoginRequiredMixin, PermissionRequiredMixin, ListView):
+    model = User
+    permission_required = 'users.view_user'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Пользователи'
+        return context
+
+
+class UserDetail(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
+    model = User
+    permission_required = 'users.view_user'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Профиль'
+        return context
+
+
+class UserProfileUpdate(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     model = User
     form_class = UserProfileForm
+    permission_required = 'users.change_user'
     success_url = reverse_lazy('main:index')
 
     def get_object(self, queryset=None):
@@ -52,5 +75,23 @@ class UserProfile(LoginRequiredMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Профиль'
+        context['title'] = 'Редактирование профиля'
+        return context
+
+
+class UserUpdate(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+    model = User
+    permission_required = ('users.change_user', 'users.change_is_active',)
+    success_url = reverse_lazy('main:index')
+
+    def get_form_class(self):
+        user = self.request.user
+        if user.has_perm('users.change_is_active'):
+            return UserProfileManagerForm
+        else:
+            raise PermissionDenied
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Редактирование пользователя'
         return context

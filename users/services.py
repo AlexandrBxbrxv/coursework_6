@@ -1,5 +1,6 @@
 import secrets
 
+from django.contrib.auth.models import Group
 from django.core.mail import send_mail
 from config.settings import EMAIL_HOST_USER
 
@@ -8,6 +9,10 @@ def send_email_verification_message(self, user):
     user.is_active = False
     token = secrets.token_hex(16)
     user.token = token
+
+    user_group = Group.objects.get(name='user')
+    user_group.user_set.add(user)
+
     user.save()
 
     host = self.request.get_host()

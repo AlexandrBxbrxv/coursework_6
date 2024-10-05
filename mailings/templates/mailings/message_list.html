@@ -10,10 +10,10 @@
   <div class="col-4">
     <div class="card mt-4">
       <div class="card-header">
-        {{ object.topic }}
+        <h6>{{ object.topic|truncatechars:40 }}</h6>
       </div>
-      <div class="card-body">
-        {{ object.body }}
+      <div class="card-body" style="height:250px">
+        <p>{{ object.body|truncatechars:360 }}</p>
       </div>
       <div class="card-footer">
         <div class="row">
