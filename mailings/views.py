@@ -47,6 +47,14 @@ class MessageList(LoginRequiredMixin, ListView):
 class MessageDetail(LoginRequiredMixin, DetailView):
     model = Message
 
+    def get_object(self, queryset=None):
+        self.object = super().get_object(queryset)
+        user = self.request.user
+        if user == self.object.owner or user.is_superuser:
+            self.object.save()
+            return self.object
+        raise PermissionDenied
+
     def get_context_data(self, *, object_list=None, **kwargs):
         context_data = super().get_context_data(**kwargs)
         context_data['title'] = 'Подробности сообщения'
@@ -117,6 +125,14 @@ class ClientList(LoginRequiredMixin, ListView):
 
 class ClientDetail(LoginRequiredMixin, DetailView):
     model = Client
+
+    def get_object(self, queryset=None):
+        self.object = super().get_object(queryset)
+        user = self.request.user
+        if user == self.object.owner or user.is_superuser:
+            self.object.save()
+            return self.object
+        raise PermissionDenied
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context_data = super().get_context_data(**kwargs)
@@ -189,6 +205,14 @@ class MailingList(LoginRequiredMixin, ListView):
 class MailingDetail(LoginRequiredMixin, DetailView):
     model = Mailing
 
+    def get_object(self, queryset=None):
+        self.object = super().get_object(queryset)
+        user = self.request.user
+        if user == self.object.owner or user.is_superuser:
+            self.object.save()
+            return self.object
+        raise PermissionDenied
+
     def get_context_data(self, *, object_list=None, **kwargs):
         context_data = super().get_context_data(**kwargs)
         context_data['title'] = 'Подробности рассылки'
@@ -256,6 +280,14 @@ class MailingTryList(LoginRequiredMixin, ListView):
 
 class MailingTryDetail(LoginRequiredMixin, DetailView):
     model = MailingTry
+
+    def get_object(self, queryset=None):
+        self.object = super().get_object(queryset)
+        user = self.request.user
+        if user == self.object.owner or user.is_superuser:
+            self.object.save()
+            return self.object
+        raise PermissionDenied
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context_data = super().get_context_data(**kwargs)
