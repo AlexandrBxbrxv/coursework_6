@@ -33,6 +33,14 @@ class MessageList(LoginRequiredMixin, ListView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context_data = super().get_context_data(**kwargs)
         context_data['title'] = 'Сообщения'
+        user = self.request.user
+        if user.is_superuser:
+            return context_data
+        users_items = []
+        for item in context_data.get('object_list'):
+            if user == item.owner:
+                users_items.append(item)
+        context_data['object_list'] = users_items
         return context_data
 
 
@@ -96,6 +104,14 @@ class ClientList(LoginRequiredMixin, ListView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context_data = super().get_context_data(**kwargs)
         context_data['title'] = 'Клиенты'
+        user = self.request.user
+        if user.is_superuser:
+            return context_data
+        users_items = []
+        for item in context_data.get('object_list'):
+            if user == item.owner:
+                users_items.append(item)
+        context_data['object_list'] = users_items
         return context_data
 
 
@@ -159,6 +175,14 @@ class MailingList(LoginRequiredMixin, ListView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context_data = super().get_context_data(**kwargs)
         context_data['title'] = 'Рассылки'
+        user = self.request.user
+        if user.is_superuser:
+            return context_data
+        users_items = []
+        for item in context_data.get('object_list'):
+            if user == item.owner:
+                users_items.append(item)
+        context_data['object_list'] = users_items
         return context_data
 
 
@@ -219,6 +243,14 @@ class MailingTryList(LoginRequiredMixin, ListView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context_data = super().get_context_data(**kwargs)
         context_data['title'] = 'Попытки рассылок'
+        user = self.request.user
+        if user.is_superuser:
+            return context_data
+        users_items = []
+        for item in context_data.get('object_list'):
+            if user == item.owner:
+                users_items.append(item)
+        context_data['object_list'] = users_items
         return context_data
 
 
