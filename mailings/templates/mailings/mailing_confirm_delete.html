@@ -7,7 +7,7 @@
     </div>
     <div class="card-body">
       Статус: {{ object.status }}<br>
-      Сообщение: {{ object.message }}
+      Сообщение: {{ object.message|truncatechars:15 }}
     </div>
     <div class="card-footer">
       <div class="row col-4">
