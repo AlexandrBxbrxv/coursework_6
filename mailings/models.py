@@ -67,6 +67,11 @@ class Mailing(models.Model):
         return self.name
 
     class Meta:
+
+        permissions = [
+            ('change_status', 'Can change status of mailing'),
+        ]
+
         verbose_name = 'рассылка'
         verbose_name_plural = 'рассылки'
         ordering = ('first_sending',)
