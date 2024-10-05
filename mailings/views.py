@@ -1,4 +1,4 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView, ListView, DetailView, UpdateView, DeleteView
 
@@ -7,9 +7,10 @@ from mailings.models import Message, Client, Mailing, MailingTry
 
 
 # CRUD для Message ##################################################
-class MessageCreate(LoginRequiredMixin, CreateView):
+class MessageCreate(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     model = Message
     form_class = MessageForm
+    permission_required = 'mailings.add_message'
     success_url = reverse_lazy('mailings:message_list')
 
     def form_valid(self, form):
@@ -25,7 +26,7 @@ class MessageCreate(LoginRequiredMixin, CreateView):
         return context_data
 
 
-class MessageList(ListView):
+class MessageList(LoginRequiredMixin, ListView):
     model = Message
 
     def get_context_data(self, *, object_list=None, **kwargs):
@@ -34,7 +35,7 @@ class MessageList(ListView):
         return context_data
 
 
-class MessageDetail(DetailView):
+class MessageDetail(LoginRequiredMixin, DetailView):
     model = Message
 
     def get_context_data(self, *, object_list=None, **kwargs):
@@ -43,9 +44,10 @@ class MessageDetail(DetailView):
         return context_data
 
 
-class MessageUpdate(LoginRequiredMixin, UpdateView):
+class MessageUpdate(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     model = Message
     form_class = MessageForm
+    permission_required = 'mailings.change_message'
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context_data = super().get_context_data(**kwargs)
@@ -56,8 +58,9 @@ class MessageUpdate(LoginRequiredMixin, UpdateView):
         return reverse('mailings:message_detail', args=[self.kwargs.get('pk')])
 
 
-class MessageDelete(LoginRequiredMixin, DeleteView):
+class MessageDelete(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     model = Message
+    permission_required = 'mailings.delete_message'
     success_url = reverse_lazy('mailings:message_list')
 
     def get_context_data(self, *, object_list=None, **kwargs):
@@ -67,9 +70,10 @@ class MessageDelete(LoginRequiredMixin, DeleteView):
 
 
 # CRUD для Client ###################################################
-class ClientCreate(LoginRequiredMixin, CreateView):
+class ClientCreate(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     model = Client
     form_class = ClientForm
+    permission_required = 'mailings.add_client'
     success_url = reverse_lazy('mailings:client_list')
 
     def form_valid(self, form):
@@ -85,7 +89,7 @@ class ClientCreate(LoginRequiredMixin, CreateView):
         return context_data
 
 
-class ClientList(ListView):
+class ClientList(LoginRequiredMixin, ListView):
     model = Client
 
     def get_context_data(self, *, object_list=None, **kwargs):
@@ -94,7 +98,7 @@ class ClientList(ListView):
         return context_data
 
 
-class ClientDetail(DetailView):
+class ClientDetail(LoginRequiredMixin, DetailView):
     model = Client
 
     def get_context_data(self, *, object_list=None, **kwargs):
@@ -103,9 +107,10 @@ class ClientDetail(DetailView):
         return context_data
 
 
-class ClientUpdate(LoginRequiredMixin, UpdateView):
+class ClientUpdate(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     model = Client
     form_class = ClientForm
+    permission_required = 'mailings.change_client'
 
     def get_success_url(self):
         return reverse('mailings:client_detail', args=[self.kwargs.get('pk')])
@@ -116,8 +121,9 @@ class ClientUpdate(LoginRequiredMixin, UpdateView):
         return context_data
 
 
-class ClientDelete(LoginRequiredMixin, DeleteView):
+class ClientDelete(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     model = Client
+    permission_required = 'mailings.delete_client'
     success_url = reverse_lazy('mailings:client_list')
 
     def get_context_data(self, *, object_list=None, **kwargs):
@@ -127,9 +133,10 @@ class ClientDelete(LoginRequiredMixin, DeleteView):
 
 
 # CRUD для Mailing ##################################################
-class MailingCreate(LoginRequiredMixin, CreateView):
+class MailingCreate(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     model = Mailing
     form_class = MailingForm
+    permission_required = 'mailings.add_mailing'
     success_url = reverse_lazy('mailings:mailing_create')
 
     def form_valid(self, form):
@@ -145,7 +152,7 @@ class MailingCreate(LoginRequiredMixin, CreateView):
         return context_data
 
 
-class MailingList(ListView):
+class MailingList(LoginRequiredMixin, ListView):
     model = Mailing
 
     def get_context_data(self, *, object_list=None, **kwargs):
@@ -154,7 +161,7 @@ class MailingList(ListView):
         return context_data
 
 
-class MailingDetail(DetailView):
+class MailingDetail(LoginRequiredMixin, DetailView):
     model = Mailing
 
     def get_context_data(self, *, object_list=None, **kwargs):
@@ -163,9 +170,10 @@ class MailingDetail(DetailView):
         return context_data
 
 
-class MailingUpdate(LoginRequiredMixin, UpdateView):
+class MailingUpdate(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     model = Mailing
     form_class = MailingForm
+    permission_required = 'mailings.change_mailing'
 
     def get_success_url(self):
         return reverse('mailings:mailing_detail', args=[self.kwargs.get('pk')])
@@ -176,8 +184,9 @@ class MailingUpdate(LoginRequiredMixin, UpdateView):
         return context_data
 
 
-class MailingDelete(LoginRequiredMixin, DeleteView):
+class MailingDelete(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     model = Mailing
+    permission_required = 'mailings.delete_mailing'
     success_url = reverse_lazy('mailings:mailing_list')
 
     def get_context_data(self, *, object_list=None, **kwargs):
@@ -187,7 +196,7 @@ class MailingDelete(LoginRequiredMixin, DeleteView):
 
 
 # Read для MailingTry ###############################################
-class MailingTryList(ListView):
+class MailingTryList(LoginRequiredMixin, ListView):
     model = MailingTry
 
     def get_context_data(self, *, object_list=None, **kwargs):
@@ -196,7 +205,7 @@ class MailingTryList(ListView):
         return context_data
 
 
-class MailingTryDetail(DetailView):
+class MailingTryDetail(LoginRequiredMixin, DetailView):
     model = MailingTry
 
     def get_context_data(self, *, object_list=None, **kwargs):
