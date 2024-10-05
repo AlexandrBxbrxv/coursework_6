@@ -224,7 +224,7 @@ class MailingList(LoginRequiredMixin, ListView):
         context_data = super().get_context_data(**kwargs)
         context_data['title'] = 'Рассылки'
         user = self.request.user
-        if user.is_superuser:
+        if user.is_superuser or user.has_perm('mailings.change_status'):
             return context_data
         users_items = []
         for item in context_data.get('object_list'):
@@ -240,7 +240,7 @@ class MailingDetail(LoginRequiredMixin, DetailView):
     def get_object(self, queryset=None):
         self.object = super().get_object(queryset)
         user = self.request.user
-        if user == self.object.owner or user.is_superuser:
+        if user == self.object.owner or user.has_perm('mailings.change_status'):
             self.object.save()
             return self.object
         raise PermissionDenied
