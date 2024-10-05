@@ -1,4 +1,4 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
@@ -44,8 +44,9 @@ def email_verification(request, token):
     return redirect('users:login')
 
 
-class UserList(ListView):
+class UserList(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     model = User
+    permission_required = 'users.view_user'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -53,8 +54,9 @@ class UserList(ListView):
         return context
 
 
-class UserDetail(DetailView):
+class UserDetail(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
     model = User
+    permission_required = 'users.view_user'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -62,9 +64,10 @@ class UserDetail(DetailView):
         return context
 
 
-class UserProfileUpdate(LoginRequiredMixin, UpdateView):
+class UserProfileUpdate(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     model = User
     form_class = UserProfileForm
+    permission_required = 'users.change_user'
     success_url = reverse_lazy('main:index')
 
     def get_object(self, queryset=None):
@@ -76,8 +79,9 @@ class UserProfileUpdate(LoginRequiredMixin, UpdateView):
         return context
 
 
-class UserUpdate(LoginRequiredMixin, UpdateView):
+class UserUpdate(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     model = User
+    permission_required = ('users.change_user', 'users.change_is_active',)
     success_url = reverse_lazy('main:index')
 
     def get_form_class(self):
