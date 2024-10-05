@@ -66,19 +66,35 @@ class MessageUpdate(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     form_class = MessageForm
     permission_required = 'mailings.change_message'
 
+    def get_object(self, queryset=None):
+        self.object = super().get_object(queryset)
+        user = self.request.user
+        if user == self.object.owner or user.is_superuser:
+            self.object.save()
+            return self.object
+        raise PermissionDenied
+
+    def get_success_url(self):
+        return reverse('mailings:message_detail', args=[self.kwargs.get('pk')])
+
     def get_context_data(self, *, object_list=None, **kwargs):
         context_data = super().get_context_data(**kwargs)
         context_data['title'] = 'Редактирование сообщения'
         return context_data
-
-    def get_success_url(self):
-        return reverse('mailings:message_detail', args=[self.kwargs.get('pk')])
 
 
 class MessageDelete(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     model = Message
     permission_required = 'mailings.delete_message'
     success_url = reverse_lazy('mailings:message_list')
+
+    def get_object(self, queryset=None):
+        self.object = super().get_object(queryset)
+        user = self.request.user
+        if user == self.object.owner or user.is_superuser:
+            self.object.save()
+            return self.object
+        raise PermissionDenied
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context_data = super().get_context_data(**kwargs)
@@ -145,6 +161,14 @@ class ClientUpdate(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     form_class = ClientForm
     permission_required = 'mailings.change_client'
 
+    def get_object(self, queryset=None):
+        self.object = super().get_object(queryset)
+        user = self.request.user
+        if user == self.object.owner or user.is_superuser:
+            self.object.save()
+            return self.object
+        raise PermissionDenied
+
     def get_success_url(self):
         return reverse('mailings:client_detail', args=[self.kwargs.get('pk')])
 
@@ -158,6 +182,14 @@ class ClientDelete(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     model = Client
     permission_required = 'mailings.delete_client'
     success_url = reverse_lazy('mailings:client_list')
+
+    def get_object(self, queryset=None):
+        self.object = super().get_object(queryset)
+        user = self.request.user
+        if user == self.object.owner or user.is_superuser:
+            self.object.save()
+            return self.object
+        raise PermissionDenied
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context_data = super().get_context_data(**kwargs)
@@ -233,7 +265,7 @@ class MailingUpdate(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
 
     def get_form_class(self):
         user = self.request.user
-        if user == self.object.owner:
+        if user == self.object.owner or user.is_superuser:
             return MailingForm
         if user.has_perm('mailings.change_status'):
             return MailingManagerForm
@@ -253,6 +285,14 @@ class MailingDelete(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     model = Mailing
     permission_required = 'mailings.delete_mailing'
     success_url = reverse_lazy('mailings:mailing_list')
+
+    def get_object(self, queryset=None):
+        self.object = super().get_object(queryset)
+        user = self.request.user
+        if user == self.object.owner or user.is_superuser:
+            self.object.save()
+            return self.object
+        raise PermissionDenied
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context_data = super().get_context_data(**kwargs)
