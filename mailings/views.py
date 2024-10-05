@@ -27,8 +27,9 @@ class MessageCreate(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
         return context_data
 
 
-class MessageList(LoginRequiredMixin, ListView):
+class MessageList(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     model = Message
+    permission_required = 'mailings.view_message'
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context_data = super().get_context_data(**kwargs)
@@ -44,8 +45,9 @@ class MessageList(LoginRequiredMixin, ListView):
         return context_data
 
 
-class MessageDetail(LoginRequiredMixin, DetailView):
+class MessageDetail(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
     model = Message
+    permission_required = 'mailings.view_message'
 
     def get_object(self, queryset=None):
         self.object = super().get_object(queryset)
@@ -122,8 +124,9 @@ class ClientCreate(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
         return context_data
 
 
-class ClientList(LoginRequiredMixin, ListView):
+class ClientList(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     model = Client
+    permission_required = 'mailings.view_client'
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context_data = super().get_context_data(**kwargs)
@@ -139,8 +142,9 @@ class ClientList(LoginRequiredMixin, ListView):
         return context_data
 
 
-class ClientDetail(LoginRequiredMixin, DetailView):
+class ClientDetail(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
     model = Client
+    permission_required = 'mailings.view_client'
 
     def get_object(self, queryset=None):
         self.object = super().get_object(queryset)
@@ -217,8 +221,9 @@ class MailingCreate(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
         return context_data
 
 
-class MailingList(LoginRequiredMixin, ListView):
+class MailingList(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     model = Mailing
+    permission_required = 'mailings.view_mailing'
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context_data = super().get_context_data(**kwargs)
@@ -234,8 +239,9 @@ class MailingList(LoginRequiredMixin, ListView):
         return context_data
 
 
-class MailingDetail(LoginRequiredMixin, DetailView):
+class MailingDetail(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
     model = Mailing
+    permission_required = 'mailings.view_mailing'
 
     def get_object(self, queryset=None):
         self.object = super().get_object(queryset)
@@ -301,8 +307,9 @@ class MailingDelete(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
 
 
 # Read для MailingTry ###############################################
-class MailingTryList(LoginRequiredMixin, ListView):
+class MailingTryList(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     model = MailingTry
+    permission_required = 'mailings.view_mailingtry'
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context_data = super().get_context_data(**kwargs)
@@ -318,8 +325,9 @@ class MailingTryList(LoginRequiredMixin, ListView):
         return context_data
 
 
-class MailingTryDetail(LoginRequiredMixin, DetailView):
+class MailingTryDetail(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
     model = MailingTry
+    permission_required = 'mailing.view_mailingtry'
 
     def get_object(self, queryset=None):
         self.object = super().get_object(queryset)
