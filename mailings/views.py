@@ -1,8 +1,9 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.core.exceptions import PermissionDenied
 from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView, ListView, DetailView, UpdateView, DeleteView
 
-from mailings.forms import MessageForm, ClientForm, MailingForm
+from mailings.forms import MessageForm, ClientForm, MailingForm, MailingManagerForm
 from mailings.models import Message, Client, Mailing, MailingTry
 
 
@@ -172,8 +173,24 @@ class MailingDetail(LoginRequiredMixin, DetailView):
 
 class MailingUpdate(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     model = Mailing
-    form_class = MailingForm
     permission_required = 'mailings.change_mailing'
+
+    def get_object(self, queryset=None):
+        self.object = super().get_object(queryset)
+        user = self.request.user
+        if user == self.object.owner or user.has_perm('mailings.change_status'):
+            self.object.save()
+            return self.object
+        raise PermissionDenied
+
+    def get_form_class(self):
+        user = self.request.user
+        if user == self.object.owner:
+            return MailingForm
+        if user.has_perm('mailings.change_status'):
+            return MailingManagerForm
+        else:
+            raise PermissionDenied
 
     def get_success_url(self):
         return reverse('mailings:mailing_detail', args=[self.kwargs.get('pk')])
