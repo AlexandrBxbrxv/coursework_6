@@ -1,7 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.core.exceptions import PermissionDenied
-from django.urls import reverse_lazy
-from django.views.generic import CreateView, ListView, DetailView
+from django.urls import reverse_lazy, reverse
+from django.views.generic import CreateView, ListView, DetailView, UpdateView
 
 from blog.forms import BlogForm
 from blog.models import Blog
@@ -37,7 +37,7 @@ class BlogList(LoginRequiredMixin, PermissionRequiredMixin, ListView):
         return context_data
 
 
-class BlogDetail(DetailView):
+class BlogDetail(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
     model = Blog
     permission_required = 'blog.view_blog'
 
@@ -52,4 +52,26 @@ class BlogDetail(DetailView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context_data = super().get_context_data(**kwargs)
         context_data['title'] = 'Подробности блога'
+        return context_data
+
+
+class BlogUpdate(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+    model = Blog
+    form_class = BlogForm
+    permission_required = 'blog.change_blog'
+
+    def get_object(self, queryset=None):
+        self.object = super().get_object(queryset)
+        user = self.request.user
+        if user == self.object.owner or user.is_superuser:
+            self.object.save()
+            return self.object
+        raise PermissionDenied
+
+    def get_success_url(self):
+        return reverse('blog:blog_detail', args=[self.kwargs.get('pk')])
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        context_data['title'] = 'Редактирование блога'
         return context_data
