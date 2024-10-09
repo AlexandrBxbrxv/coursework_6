@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'main',
     'users',
     'mailings',
+    'blog',
 ]
 
 MIDDLEWARE = [
@@ -129,3 +130,6 @@ EMAIL_USE_SSL = os.getenv('EMAIL_USE_SSL') == 'True'
 
 SERVER_EMAIL = EMAIL_HOST_USER
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
