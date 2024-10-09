@@ -2,49 +2,50 @@
 {% block content %}
 {% load custom_tags %}
 <div>
-  <div>
-    <p>Сайт управления рассылками. Вы должны быть зарегистрированы, чтобы пользоваться нашими услугами</p>
-  </div>
+  <p>Сайт управления рассылками. Вы должны быть зарегистрированы, чтобы пользоваться нашими услугами</p>
+</div>
+<hr>
+<div>
+  <h4>Статистика</h4>
+  <p>
+    Рассылок всего: {{ all_mailings_len }}<br>
+    Активных рассылок: {{ active_mailings_len }}<br>
+    Уникальных клиентов: {{ all_clients_len }}<br>
+  </p>
+</div>
+{% if popular_blogs.count > 0 %}
+<div>
+  <h4 class="text-center">Популярные блоги</h4>
   <hr>
-  <div>
-    <h4>Статистика</h4>
-    <p>
-      Рассылок всего: {{ all_mailings_len }}<br>
-      Активных рассылок: {{ active_mailings_len }}<br>
-      Уникальных клиентов: {{ all_clients_len }}<br>
-    </p>
-  </div>
-  <div>
-    <h4 class="text-center">Популярные блоги</h4>
-    <hr>
-    <div class="row">
-      {% for object in popular_blogs %}
-      <div class="col-4">
-        <div class="card border-dark">
-          <div class="card-header">
-            <h6>{{ object.title|truncatechars:40 }}</h6>
-          </div>
-          <div class="card-body" style="height:200px">
-            <div class="row">
-              <div class="col-5">
-                <img src="{{object.image | media_filter}}" style="width: 10rem; height: 10rem;">
-              </div>
-              <div class="col-7">
-                <p>{{ object.body|truncatechars:120 }}</p>
-              </div>
+  <div class="row">
+    {% for object in popular_blogs %}
+    <div class="col-4">
+      <div class="card border-dark">
+        <div class="card-header">
+          <h6>{{ object.title|truncatechars:40 }}</h6>
+        </div>
+        <div class="card-body" style="height:200px">
+          <div class="row">
+            <div class="col-5">
+              <img src="{{object.image | media_filter}}" style="width: 10rem; height: 10rem;">
+            </div>
+            <div class="col-7">
+              <p>{{ object.body|truncatechars:120 }}</p>
             </div>
           </div>
-          <div class="card-footer">
-            <div class="row">
-              <div class="col-12 p-1">
-                <a class="btn btn-outline-dark col-12" href="{% url 'blog:blog_detail' object.pk %}">Подробнее</a>
-              </div>
+        </div>
+        <div class="card-footer">
+          <div class="row">
+            <div class="col-12 p-1">
+              <a class="btn btn-outline-dark col-12" href="{% url 'blog:blog_detail' object.pk %}">Подробнее</a>
             </div>
           </div>
         </div>
       </div>
-      {% endfor %}
     </div>
-    <hr>
+    {% endfor %}
   </div>
-  {% endblock %}
+  <hr>
+</div>
+{% endif %}
+{% endblock %}
