@@ -1,12 +1,13 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.core.exceptions import PermissionDenied
 from django.urls import reverse_lazy
-from django.views.generic import CreateView
+from django.views.generic import CreateView, ListView
 
 from blog.forms import BlogForm
 from blog.models import Blog
 
 
+# CRUD для Blog #####################################################
 class BlogCreate(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     model = Blog
     form_class = BlogForm
@@ -23,4 +24,13 @@ class BlogCreate(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context_data = super().get_context_data(**kwargs)
         context_data['title'] = 'Создание блога'
+        return context_data
+
+
+class BlogList(ListView):
+    model = Blog
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        context_data['title'] = 'Блоги'
         return context_data
