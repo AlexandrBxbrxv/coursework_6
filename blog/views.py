@@ -1,7 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.core.exceptions import PermissionDenied
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, ListView
+from django.views.generic import CreateView, ListView, DetailView
 
 from blog.forms import BlogForm
 from blog.models import Blog
@@ -27,10 +27,29 @@ class BlogCreate(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
         return context_data
 
 
-class BlogList(ListView):
+class BlogList(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     model = Blog
+    permission_required = 'blog.view_blog'
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context_data = super().get_context_data(**kwargs)
         context_data['title'] = 'Блоги'
+        return context_data
+
+
+class BlogDetail(DetailView):
+    model = Blog
+    permission_required = 'blog.view_blog'
+
+    def get_object(self, queryset=None):
+        self.object = super().get_object(queryset)
+        user = self.request.user
+        if user == self.object.owner or user.is_superuser:
+            self.object.save()
+            return self.object
+        raise PermissionDenied
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        context_data['title'] = 'Подробности блога'
         return context_data
