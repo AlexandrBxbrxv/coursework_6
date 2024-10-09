@@ -43,11 +43,9 @@ class BlogDetail(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
 
     def get_object(self, queryset=None):
         self.object = super().get_object(queryset)
-        user = self.request.user
-        if user == self.object.owner or user.is_superuser:
-            self.object.save()
-            return self.object
-        raise PermissionDenied
+        self.object.views_count += 1
+        self.object.save()
+        return self.object
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context_data = super().get_context_data(**kwargs)
