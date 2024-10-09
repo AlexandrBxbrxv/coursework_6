@@ -7,4 +7,4 @@ from mailings.forms import StyleFormMixin
 class BlogForm(StyleFormMixin, forms.ModelForm):
     class Meta:
         model = Blog
-        fields = ('title', 'body', 'image', 'publish_date',)
+        fields = ('title', 'body', 'image',)
