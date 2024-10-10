@@ -327,7 +327,7 @@ class MailingTryList(LoginRequiredMixin, PermissionRequiredMixin, ListView):
 
 class MailingTryDetail(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
     model = MailingTry
-    permission_required = 'mailing.view_mailingtry'
+    permission_required = 'mailings.view_mailingtry'
 
     def get_object(self, queryset=None):
         self.object = super().get_object(queryset)
