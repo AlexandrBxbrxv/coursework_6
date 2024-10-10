@@ -9,7 +9,7 @@ class Message(models.Model):
     topic = models.CharField(max_length=100, verbose_name='тема')
     body = models.TextField(verbose_name='содержимое')
 
-    owner = models.ForeignKey(User, related_name='message_owner', on_delete=models.SET_NULL,
+    owner = models.ForeignKey(User, related_name='message_owner', on_delete=models.CASCADE,
                               **NULLABLE, verbose_name='владелец')
 
     def __str__(self):
@@ -25,7 +25,7 @@ class Client(models.Model):
     full_name = models.CharField(max_length=200, verbose_name='фио')
     comment = models.TextField(**NULLABLE)
 
-    owner = models.ForeignKey(User, related_name='client_owner', on_delete=models.SET_NULL,
+    owner = models.ForeignKey(User, related_name='client_owner', on_delete=models.CASCADE,
                               **NULLABLE, verbose_name='владелец')
 
     def __str__(self):
@@ -51,7 +51,9 @@ class Mailing(models.Model):
     ]
 
     name = models.CharField(max_length=100, verbose_name='название')
-    first_sending = models.DateField(help_text='дата и время первой отправки рассылки', verbose_name='первая отправка')
+    first_sending = models.DateTimeField(help_text='дата и время первой отправки рассылки',
+                                         verbose_name='первая отправка')
+    last_sending = models.DateTimeField(**NULLABLE, verbose_name='крайняя отправка')
     interval = models.CharField(max_length=15, choices=INTERVALS, default='month', verbose_name='периодичность')
     status = models.CharField(max_length=15, choices=STATUSES, default='off', verbose_name='статус')
 
@@ -60,7 +62,7 @@ class Mailing(models.Model):
 
     clients = models.ManyToManyField(Client, related_name='mailing_clients', verbose_name='клиенты рассылки')
 
-    owner = models.ForeignKey(User, related_name='mailing_owner', on_delete=models.SET_NULL,
+    owner = models.ForeignKey(User, related_name='mailing_owner', on_delete=models.CASCADE,
                               **NULLABLE, verbose_name='владелец')
 
     def __str__(self):
@@ -78,15 +80,15 @@ class Mailing(models.Model):
 
 
 class MailingTry(models.Model):
-    last_try = models.DateField(help_text='дата и время последней попытки', verbose_name='последняя попытка')
+    last_try = models.DateTimeField(help_text='дата и время последней попытки', verbose_name='последняя попытка')
     try_status = models.BooleanField(default=False, verbose_name='статус попытки')
     email_response = models.TextField(**NULLABLE, verbose_name='ответ почтового сервера')
     name = models.CharField(max_length=100, **NULLABLE, verbose_name='наименование')
 
-    mailing = models.ForeignKey(Mailing, **NULLABLE, on_delete=models.SET_NULL,
+    mailing = models.ForeignKey(Mailing, **NULLABLE, on_delete=models.CASCADE,
                                 related_name='tries_mailing', verbose_name='рассылка попытки')
 
-    owner = models.ForeignKey(User, related_name='mailingtry_owner', on_delete=models.SET_NULL,
+    owner = models.ForeignKey(User, related_name='mailingtry_owner', on_delete=models.CASCADE,
                               **NULLABLE, verbose_name='владелец')
 
     def __str__(self):
