@@ -80,7 +80,7 @@ class Mailing(models.Model):
 
 
 class MailingTry(models.Model):
-    last_try = models.DateTimeField(help_text='дата и время последней попытки', verbose_name='последняя попытка')
+    last_try = models.DateTimeField(auto_now=True, help_text='дата и время последней попытки', verbose_name='последняя попытка')
     try_status = models.BooleanField(default=False, verbose_name='статус попытки')
     email_response = models.TextField(**NULLABLE, verbose_name='ответ почтового сервера')
     name = models.CharField(max_length=100, **NULLABLE, verbose_name='наименование')
