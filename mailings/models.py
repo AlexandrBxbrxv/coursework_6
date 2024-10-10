@@ -80,10 +80,10 @@ class Mailing(models.Model):
 
 
 class MailingTry(models.Model):
-    last_try = models.DateTimeField(auto_now=True, help_text='дата и время последней попытки', verbose_name='последняя попытка')
+    last_try = models.DateTimeField(auto_now=True, help_text='дата и время последней попытки',
+                                    verbose_name='последняя попытка')
     try_status = models.BooleanField(default=False, verbose_name='статус попытки')
     email_response = models.TextField(**NULLABLE, verbose_name='ответ почтового сервера')
-    name = models.CharField(max_length=100, **NULLABLE, verbose_name='наименование')
 
     mailing = models.ForeignKey(Mailing, **NULLABLE, on_delete=models.CASCADE,
                                 related_name='tries_mailing', verbose_name='рассылка попытки')
@@ -91,10 +91,7 @@ class MailingTry(models.Model):
     owner = models.ForeignKey(User, related_name='mailingtry_owner', on_delete=models.CASCADE,
                               **NULLABLE, verbose_name='владелец')
 
-    def __str__(self):
-        return self.name
-
     class Meta:
         verbose_name = 'попытка рассылки'
         verbose_name_plural = 'попытки рассылки'
-        ordering = ('name', 'last_try',)
+        ordering = ('last_try',)

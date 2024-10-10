@@ -27,6 +27,5 @@ class ClientAdmin(admin.ModelAdmin):
 
 @admin.register(MailingTry)
 class MailingTryAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'last_try', 'try_status', 'mailing', 'owner',)
+    list_display = ('id', 'last_try', 'try_status', 'mailing', 'owner',)
     list_filter = ('try_status', 'mailing', 'owner',)
-    search_fields = ('name',)
