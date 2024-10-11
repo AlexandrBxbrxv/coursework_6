@@ -28,7 +28,7 @@ class ClientForm(StyleFormMixin, ModelForm):
 class MailingForm(StyleFormMixin, ModelForm):
     class Meta:
         model = Mailing
-        exclude = ('owner',)
+        exclude = ('owner', 'last_sending',)
 
 
 class MailingManagerForm(StyleFormMixin, ModelForm):
