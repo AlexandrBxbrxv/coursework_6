@@ -1,8 +1,12 @@
+import datetime
+from pytz import timezone
+
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.core.exceptions import PermissionDenied
 from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView, ListView, DetailView, UpdateView, DeleteView
 
+from config import settings
 from mailings.forms import MessageForm, ClientForm, MailingForm, MailingManagerForm
 from mailings.models import Message, Client, Mailing, MailingTry
 
@@ -208,10 +212,35 @@ class MailingCreate(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     permission_required = 'mailings.add_mailing'
     success_url = reverse_lazy('mailings:mailing_create')
 
+    def get_form_kwargs(self):
+        """Добавляем текущего пользователя в аргументы формы."""
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
     def form_valid(self, form):
         mailing = form.save()
         user = self.request.user
         mailing.owner = user
+
+        zone = timezone(settings.TIME_ZONE)
+        mailing.first_sending = mailing.first_sending.replace(tzinfo=zone, microsecond=0, second=0)
+
+        # date_time = mailing.first_sending.replace(tzinfo=zone, microsecond=0, second=0)
+
+        # mailing.first_sending = (
+        #     datetime.datetime.now(zone).replace(
+        #         year=date_time.year,
+        #         month=date_time.month,
+        #         day=date_time.day,
+        #         hour=date_time.hour,
+        #         minute=date_time.minute,
+        #         second=0,
+        #         microsecond=0,
+        #     )
+        # )
+
+        mailing.next_sending = mailing.first_sending
         mailing.save()
         return super().form_valid(form)
 
@@ -268,6 +297,30 @@ class MailingUpdate(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
             self.object.save()
             return self.object
         raise PermissionDenied
+
+    def form_valid(self, form):
+        mailing = form.save()
+        user = self.request.user
+        mailing.owner = user
+
+        # zone = timezone(settings.TIME_ZONE)
+        # date_time = mailing.first_sending
+        #
+        # mailing.first_sending = (
+        #     datetime.datetime.now(zone).replace(
+        #         year=date_time.year,
+        #         month=date_time.month,
+        #         day=date_time.day,
+        #         hour=date_time.hour,
+        #         minute=date_time.minute,
+        #         second=0,
+        #         microsecond=0,
+        #     )
+        # )
+
+        mailing.next_sending = mailing.first_sending
+        mailing.save()
+        return super().form_valid(form)
 
     def get_form_class(self):
         user = self.request.user
