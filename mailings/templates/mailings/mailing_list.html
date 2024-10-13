@@ -1,6 +1,6 @@
 {% extends 'main/base.html' %}
 {% block content %}
-{% if user.is_authenticated %}
+{% if perms.mailings.add_mailing %}
 <div class="container p-0">
   <a class="btn btn-outline-success" href="{% url 'mailings:mailing_create' %}">Добавить рассылку</a>
 </div>
