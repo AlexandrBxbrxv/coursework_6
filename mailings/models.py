@@ -53,6 +53,7 @@ class Mailing(models.Model):
     name = models.CharField(max_length=100, verbose_name='название')
     first_sending = models.DateTimeField(help_text='дата и время первой отправки',
                                          verbose_name='первая отправка')
+    last_sending = models.DateTimeField(**NULLABLE, verbose_name='крайняя отправка')
     next_sending = models.DateTimeField(**NULLABLE, verbose_name='следующая отправка')
     interval = models.CharField(max_length=15, choices=INTERVALS, default='month', verbose_name='периодичность')
     status = models.CharField(max_length=15, choices=STATUSES, default='off', verbose_name='статус')
