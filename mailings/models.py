@@ -50,11 +50,10 @@ class Mailing(models.Model):
         ('send_waiting', 'Отправлена, ожидает следующей отправки')
     ]
 
-    name = models.CharField(max_length=100, verbose_name='название')
-    first_sending = models.DateTimeField(help_text='дата и время первой отправки',
-                                         verbose_name='первая отправка')
+    name = models.CharField(max_length=100, **NULLABLE, verbose_name='название')
+    next_sending = models.DateTimeField(**NULLABLE, help_text='ГГГГ-ММ-ДД ЧЧ:ММ:СС',
+                                        verbose_name='дата и время отправки')
     last_sending = models.DateTimeField(**NULLABLE, verbose_name='крайняя отправка')
-    next_sending = models.DateTimeField(**NULLABLE, verbose_name='следующая отправка')
     interval = models.CharField(max_length=15, choices=INTERVALS, default='month', verbose_name='периодичность')
     status = models.CharField(max_length=15, choices=STATUSES, default='off', verbose_name='статус')
 
@@ -77,7 +76,7 @@ class Mailing(models.Model):
 
         verbose_name = 'рассылка'
         verbose_name_plural = 'рассылки'
-        ordering = ('first_sending',)
+        ordering = ('next_sending',)
 
 
 class MailingTry(models.Model):
