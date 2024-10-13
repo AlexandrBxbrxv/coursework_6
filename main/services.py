@@ -1,6 +1,6 @@
 def send_mailing():
     from pytz import timezone
-    from datetime import datetime
+    import datetime
     from smtplib import SMTPException
     from django.core.mail import BadHeaderError
     from config import settings
@@ -10,10 +10,9 @@ def send_mailing():
     from mailings.models import MailingTry
 
     zone = timezone(settings.TIME_ZONE)
-    current_datetime = datetime.now(zone)
-    mailings = Mailing.objects.exclude(status='off').filter(first_sending__lte=current_datetime)
+    current_datetime = datetime.datetime.now(zone).replace(microsecond=0)
+    mailings = Mailing.objects.exclude(status='off').filter(next_sending__lte=current_datetime)
     for mailing in mailings:
-
         subject = mailing.message.topic
         message = mailing.message.body
         from_email = EMAIL_HOST_USER
@@ -40,18 +39,29 @@ def send_mailing():
 
             except BadHeaderError as e:
                 e_msg = f'Обнаружен неверный заголовок. Ошибка: {e}'
-                print(e_msg)
                 mailing_try.email_response = e_msg
                 mailing_try.save()
 
             except SMTPException as e:
                 e_msg = f'Произошла ошибка при отправке письма. Ошибка: {e}'
-                print(e_msg)
                 mailing_try.email_response = e_msg
                 mailing_try.save()
 
         else:
             e_msg = 'Отсутствует сообщение'
-            print(e_msg)
             mailing_try.email_response = e_msg
             mailing_try.save()
+
+        mailing.last_sending = current_datetime
+        mailing.save()
+
+        if mailing.interval == 'day':
+            mailing.next_sending = mailing.last_sending + datetime.timedelta(days=1)
+            mailing.save()
+        if mailing.interval == 'week':
+            mailing.next_sending = mailing.last_sending + datetime.timedelta(weeks=1)
+            mailing.save()
+        if mailing.interval == 'month':
+            mailing.next_sending = mailing.last_sending + datetime.timedelta(days=30)
+            mailing.save()
+
