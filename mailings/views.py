@@ -1,4 +1,3 @@
-import datetime
 from pytz import timezone
 
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
@@ -224,23 +223,8 @@ class MailingCreate(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
         mailing.owner = user
 
         zone = timezone(settings.TIME_ZONE)
-        mailing.first_sending = mailing.first_sending.replace(tzinfo=zone, microsecond=0, second=0)
+        mailing.next_sending = mailing.next_sending.replace(tzinfo=zone, microsecond=0, second=0)
 
-        # date_time = mailing.first_sending.replace(tzinfo=zone, microsecond=0, second=0)
-
-        # mailing.first_sending = (
-        #     datetime.datetime.now(zone).replace(
-        #         year=date_time.year,
-        #         month=date_time.month,
-        #         day=date_time.day,
-        #         hour=date_time.hour,
-        #         minute=date_time.minute,
-        #         second=0,
-        #         microsecond=0,
-        #     )
-        # )
-
-        mailing.next_sending = mailing.first_sending
         mailing.save()
         return super().form_valid(form)
 
@@ -303,22 +287,9 @@ class MailingUpdate(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
         user = self.request.user
         mailing.owner = user
 
-        # zone = timezone(settings.TIME_ZONE)
-        # date_time = mailing.first_sending
-        #
-        # mailing.first_sending = (
-        #     datetime.datetime.now(zone).replace(
-        #         year=date_time.year,
-        #         month=date_time.month,
-        #         day=date_time.day,
-        #         hour=date_time.hour,
-        #         minute=date_time.minute,
-        #         second=0,
-        #         microsecond=0,
-        #     )
-        # )
+        zone = timezone(settings.TIME_ZONE)
+        mailing.next_sending = mailing.next_sending.replace(tzinfo=zone, microsecond=0, second=0)
 
-        mailing.next_sending = mailing.first_sending
         mailing.save()
         return super().form_valid(form)
 
