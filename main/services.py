@@ -1,3 +1,10 @@
+from django.core.cache import cache
+
+from blog.models import Blog
+from config.settings import CACHE_ENABLED
+from mailings.models import Mailing, Client
+
+
 def send_mailing():
     from pytz import timezone
     import datetime
@@ -65,3 +72,50 @@ def send_mailing():
             mailing.next_sending = mailing.last_sending + datetime.timedelta(days=30)
             mailing.save()
 
+
+def get_all_mailings_len_from_cache():
+    """Возвращает из кеша количество рассылок, если кеш пуст записывает это количество в кеш"""
+    if not CACHE_ENABLED:
+        return len(Mailing.objects.all())
+    key = 'all_mailings_len'
+    all_mailings_len = cache.get(key)
+    if all_mailings_len is not None:
+        return all_mailings_len
+    cache.set(key, len(Mailing.objects.all()))
+    return len(Mailing.objects.all())
+
+
+def get_active_mailings_len_from_cache():
+    """Возвращает из кеша количество активных рассылок, если кеш пуст записывает это количество в кеш"""
+    if not CACHE_ENABLED:
+        return len(Mailing.objects.exclude(status='off'))
+    key = 'active_mailings_len'
+    active_mailings_len = cache.get(key)
+    if active_mailings_len is not None:
+        return active_mailings_len
+    cache.set(key, len(Mailing.objects.exclude(status='off')))
+    return len(Mailing.objects.exclude(status='off'))
+
+
+def get_all_clients_len_from_cache():
+    """Возвращает из кеша количество клиентов, если кеш пуст записывает это количество в кеш"""
+    if not CACHE_ENABLED:
+        return len(Client.objects.all())
+    key = 'all_clients_len'
+    all_clients_len = cache.get(key)
+    if all_clients_len is not None:
+        return all_clients_len
+    cache.set(key, len(Client.objects.all()))
+    return len(Client.objects.all())
+
+
+def get_popular_blogs_from_cache():
+    """Возвращает из кеша 3 популярных по просмотрам блога, если кеш пуст записывает эти объекты в кеш"""
+    if not CACHE_ENABLED:
+        return Blog.objects.order_by('-views_count')[:3]
+    key = 'popular_blogs'
+    popular_blogs = cache.get(key)
+    if popular_blogs is not None:
+        return popular_blogs
+    cache.set(key, Blog.objects.order_by('-views_count')[:3])
+    return Blog.objects.order_by('-views_count')[:3]
