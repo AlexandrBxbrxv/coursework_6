@@ -5,6 +5,7 @@ from django.views.generic import CreateView, ListView, DetailView, UpdateView, D
 
 from blog.forms import BlogForm
 from blog.models import Blog
+from blog.services import get_blog_list_from_cache
 
 
 # CRUD для Blog #####################################################
@@ -34,6 +35,7 @@ class BlogList(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context_data = super().get_context_data(**kwargs)
         context_data['title'] = 'Блоги'
+        context_data['object_list'] = get_blog_list_from_cache()
         return context_data
 
 
