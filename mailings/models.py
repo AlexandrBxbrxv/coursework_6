@@ -39,7 +39,6 @@ class Client(models.Model):
 class Mailing(models.Model):
 
     INTERVALS = [
-        ('minute', 'Раз в минуту'),
         ('day', 'Раз в день'),
         ('week', 'Раз в неделю'),
         ('month', 'Раз в месяц')
