@@ -9,10 +9,12 @@
     <div class="col-4 p-1">
       <a class="btn btn-outline-secondary col-12" href="{% url 'blog:blog_list' %}">Назад</a>
     </div>
-    {% if user.is_authenticated %}
+    {% if perms.blog.change_blog%}
     <div class="col-4 p-1">
       <a class="btn btn-outline-warning col-12" href="{% url 'blog:blog_update' object.pk %}">Изменить</a>
     </div>
+    {% endif %}
+    {% if perms.blog.delete_blog%}
     <div class="col-4 p-1">
       <a class="btn btn-outline-danger col-12" href="{% url 'blog:blog_delete' object.pk %}">Удалить</a>
     </div>
