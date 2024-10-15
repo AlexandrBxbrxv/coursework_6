@@ -22,8 +22,8 @@
     <tr>
       <td>{{ object.pk }}</td>
       <td>{{ object.name|truncatechars:15 }}</td>
-      <td>{{ object.status }}</td>
-      <td>{{ object.interval }}</td>
+      <td>{{ object.get_status_display }}</td>
+      <td>{{ object.get_interval_display }}</td>
       <td>
         {% if object.message %}
         {{ object.message|truncatechars:15 }}

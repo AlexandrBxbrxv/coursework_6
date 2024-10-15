@@ -18,8 +18,8 @@
         <tbody>
         <tr>
           <td>{{ object.pk }}</td>
-          <td>{{ object.status.label }}</td>
-          <td>{{ object.interval }}</td>
+          <td>{{ object.get_status_display }}</td>
+          <td>{{ object.get_interval_display }}</td>
           <td>
             {% if object.message %}
             <a href="{% url 'mailings:message_detail' object.message.pk %}">{{ object.message|truncatechars:35 }}</a>
