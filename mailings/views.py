@@ -1,10 +1,14 @@
+from pytz import timezone
+
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.core.exceptions import PermissionDenied
 from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView, ListView, DetailView, UpdateView, DeleteView
 
+from config import settings
 from mailings.forms import MessageForm, ClientForm, MailingForm, MailingManagerForm
 from mailings.models import Message, Client, Mailing, MailingTry
+from mailings.services import get_message_list_from_cache, get_client_list_from_cache, get_mailing_list_from_cache
 
 
 # CRUD для Message ##################################################
@@ -34,6 +38,8 @@ class MessageList(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context_data = super().get_context_data(**kwargs)
         context_data['title'] = 'Сообщения'
+        context_data['object_list'] = get_message_list_from_cache()
+
         user = self.request.user
         if user.is_superuser:
             return context_data
@@ -131,6 +137,8 @@ class ClientList(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context_data = super().get_context_data(**kwargs)
         context_data['title'] = 'Клиенты'
+        context_data['object_list'] = get_client_list_from_cache()
+
         user = self.request.user
         if user.is_superuser:
             return context_data
@@ -208,10 +216,20 @@ class MailingCreate(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     permission_required = 'mailings.add_mailing'
     success_url = reverse_lazy('mailings:mailing_create')
 
+    def get_form_kwargs(self):
+        """Добавляем текущего пользователя в аргументы формы."""
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
     def form_valid(self, form):
         mailing = form.save()
         user = self.request.user
         mailing.owner = user
+
+        zone = timezone(settings.TIME_ZONE)
+        mailing.next_sending = mailing.next_sending.replace(tzinfo=zone, microsecond=0, second=0)
+
         mailing.save()
         return super().form_valid(form)
 
@@ -228,6 +246,8 @@ class MailingList(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context_data = super().get_context_data(**kwargs)
         context_data['title'] = 'Рассылки'
+        context_data['object_list'] = get_mailing_list_from_cache()
+
         user = self.request.user
         if user.is_superuser or user.has_perm('mailings.change_status'):
             return context_data
@@ -268,6 +288,17 @@ class MailingUpdate(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
             self.object.save()
             return self.object
         raise PermissionDenied
+
+    def form_valid(self, form):
+        mailing = form.save()
+        user = self.request.user
+        mailing.owner = user
+
+        zone = timezone(settings.TIME_ZONE)
+        mailing.next_sending = mailing.next_sending.replace(tzinfo=zone, microsecond=0, second=0)
+
+        mailing.save()
+        return super().form_valid(form)
 
     def get_form_class(self):
         user = self.request.user
@@ -327,7 +358,7 @@ class MailingTryList(LoginRequiredMixin, PermissionRequiredMixin, ListView):
 
 class MailingTryDetail(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
     model = MailingTry
-    permission_required = 'mailing.view_mailingtry'
+    permission_required = 'mailings.view_mailingtry'
 
     def get_object(self, queryset=None):
         self.object = super().get_object(queryset)

@@ -28,7 +28,14 @@ class ClientForm(StyleFormMixin, ModelForm):
 class MailingForm(StyleFormMixin, ModelForm):
     class Meta:
         model = Mailing
-        exclude = ('owner',)
+        exclude = ('owner', 'last_sending',)
+
+    def __init__(self, *args, **kwargs):
+        """Переопределяет набор объектов, отображаются только объекты текущего пользователя"""
+        user = kwargs.pop('user')
+        super().__init__(*args, **kwargs)
+        self.fields['message'].queryset = Message.objects.filter(owner=user)
+        self.fields['clients'].queryset = Client.objects.filter(owner=user)
 
 
 class MailingManagerForm(StyleFormMixin, ModelForm):

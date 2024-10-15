@@ -1,7 +1,7 @@
 from django.views.generic import TemplateView
 
-from blog.models import Blog
-from mailings.models import Mailing, Client
+from main.services import get_all_mailings_len_from_cache, get_active_mailings_len_from_cache, \
+    get_all_clients_len_from_cache, get_popular_blogs_from_cache
 
 
 class IndexTemplate(TemplateView):
@@ -11,11 +11,8 @@ class IndexTemplate(TemplateView):
         context_data = super().get_context_data(**kwargs)
         context_data['title'] = 'Главная'
 
-        all_mailings = Mailing.objects.all()
-        all_clients = Client.objects.all()
-
-        context_data['all_mailings_len'] = len(all_mailings)
-        context_data['active_mailings_len'] = len(all_mailings.exclude(status='off'))
-        context_data['all_clients_len'] = len(all_clients)
-        context_data['popular_blogs'] = Blog.objects.order_by('-views_count')[:3]
+        context_data['all_mailings_len'] = get_all_mailings_len_from_cache()
+        context_data['active_mailings_len'] = get_active_mailings_len_from_cache()
+        context_data['all_clients_len'] = get_all_clients_len_from_cache()
+        context_data['popular_blogs'] = get_popular_blogs_from_cache()
         return context_data
