@@ -51,6 +51,8 @@ class UserList(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Пользователи'
+        user = self.request.user
+        context['object_list'] = User.objects.exclude(is_superuser=True).exclude(pk=user.pk)
         return context
 
 
@@ -82,7 +84,7 @@ class UserProfileUpdate(LoginRequiredMixin, PermissionRequiredMixin, UpdateView)
 class UserUpdate(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     model = User
     permission_required = ('users.change_user', 'users.change_is_active',)
-    success_url = reverse_lazy('main:index')
+    success_url = reverse_lazy('users:user_list')
 
     def get_form_class(self):
         user = self.request.user
@@ -94,4 +96,7 @@ class UserUpdate(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Редактирование пользователя'
+        user = self.request.user
+        if context['object'].pk == user.pk:
+            raise PermissionDenied
         return context

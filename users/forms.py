@@ -33,3 +33,4 @@ class UserProfileManagerForm(StyleFormMixin, UserChangeForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['password'].widget = forms.HiddenInput()
+        self.fields['is_active'].help_text = 'Чтобы заблокировать пользователя - уберите галочку'
