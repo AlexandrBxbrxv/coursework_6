@@ -8,6 +8,7 @@ from django.views.generic import CreateView, ListView, DetailView, UpdateView, D
 from config import settings
 from mailings.forms import MessageForm, ClientForm, MailingForm, MailingManagerForm
 from mailings.models import Message, Client, Mailing, MailingTry
+from mailings.services import get_message_list_from_cache, get_client_list_from_cache, get_mailing_list_from_cache
 
 
 # CRUD для Message ##################################################
@@ -37,6 +38,8 @@ class MessageList(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context_data = super().get_context_data(**kwargs)
         context_data['title'] = 'Сообщения'
+        context_data['object_list'] = get_message_list_from_cache()
+
         user = self.request.user
         if user.is_superuser:
             return context_data
@@ -134,6 +137,8 @@ class ClientList(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context_data = super().get_context_data(**kwargs)
         context_data['title'] = 'Клиенты'
+        context_data['object_list'] = get_client_list_from_cache()
+
         user = self.request.user
         if user.is_superuser:
             return context_data
@@ -241,6 +246,8 @@ class MailingList(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context_data = super().get_context_data(**kwargs)
         context_data['title'] = 'Рассылки'
+        context_data['object_list'] = get_mailing_list_from_cache()
+
         user = self.request.user
         if user.is_superuser or user.has_perm('mailings.change_status'):
             return context_data
