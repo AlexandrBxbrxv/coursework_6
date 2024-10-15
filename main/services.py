@@ -59,6 +59,7 @@ def send_mailing():
             mailing_try.email_response = e_msg
             mailing_try.save()
 
+        mailing.status = 'send_waiting'
         mailing.last_sending = current_datetime
         mailing.save()
 
