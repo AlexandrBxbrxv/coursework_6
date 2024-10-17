@@ -62,6 +62,19 @@ class UserDetail(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['title'] = 'Подробности пользователя'
+        return context
+
+
+class UserProfile(LoginRequiredMixin, DetailView):
+    model = User
+    template_name = 'users/profile.html'
+
+    def get_object(self, queryset=None):
+        return self.request.user
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
         context['title'] = 'Профиль'
         return context
 
@@ -70,7 +83,7 @@ class UserProfileUpdate(LoginRequiredMixin, PermissionRequiredMixin, UpdateView)
     model = User
     form_class = UserProfileForm
     permission_required = 'users.change_user'
-    success_url = reverse_lazy('main:index')
+    success_url = reverse_lazy('users:profile')
 
     def get_object(self, queryset=None):
         return self.request.user
