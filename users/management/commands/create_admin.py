@@ -13,6 +13,8 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         user = User.objects.create(
             email=os.getenv('ADMIN_EMAIL'),
+            is_superuser=True,
+            is_staff=True
         )
         user.set_password(os.getenv('ADMIN_PASSWORD'))
 
