@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib.auth.models import Group
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
@@ -39,6 +40,10 @@ class UserRegister(CreateView):
 
 def email_verification(request, token):
     user = get_object_or_404(User, token=token)
+
+    user_group = Group.objects.get(name='user')
+    user_group.user_set.add(user)
+
     user.is_active = True
     user.save()
     return redirect('users:login')
