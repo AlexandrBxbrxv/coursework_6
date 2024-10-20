@@ -281,6 +281,12 @@ class MailingUpdate(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     model = Mailing
     permission_required = 'mailings.change_mailing'
 
+    def get_form_kwargs(self):
+        """Добавляем текущего пользователя в аргументы формы."""
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
     def get_object(self, queryset=None):
         self.object = super().get_object(queryset)
         user = self.request.user
